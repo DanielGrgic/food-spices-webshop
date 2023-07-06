@@ -1,6 +1,6 @@
 <?php
-$serverName = "DESKTOP-GI025FI"; //serverName\instanceName
-$connectionInfo = array( "Database"=>"food_spices");
+$serverName = ""; //serverName\instanceName
+$connectionInfo = array( "Database"=>"");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
 if( $conn ) {
