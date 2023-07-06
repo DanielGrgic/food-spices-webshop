@@ -1,0 +1,62 @@
+<?php
+
+    header("Cache-Control: no-cache");
+    header("Pragma: no-cache"); 
+    header("Content-type:application/json");  
+    include 'connection/connection.php'; 
+ 
+  
+if (!isset($_REQUEST['id'])) {
+    echo '{"error":401,"result":"invalid id"}';
+    sqlsrv_close($conn);
+    exit();
+} 
+
+$id = $_REQUEST['id'];
+$category_name = $_REQUEST['category_name'];
+  
+$level = 0;
+
+$sql = "SELECT [id] from [master].[dbo].[categories] where id =".$_REQUEST['id'];
+$stmt = sqlsrv_query( $conn, $sql );
+if( $stmt === false) {
+    sqlsrv_close($conn);
+    die( print_r( sqlsrv_errors(), true) ); 
+}
+while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_ASSOC) ) {
+  $level = $row['id'];
+
+} 
+
+sqlsrv_free_stmt($stmt);
+
+
+if($level!=0){
+  $sql = "UPDATE [master].[dbo].[categories] SET ";
+
+  if (isset($_REQUEST['category_name'])) $sql = $sql."[category_name]="."'".$_REQUEST['category_name']."'".", ";
+
+
+  $updatedate = date("Y-m-d H:i:s");
+  $sql = $sql."[updatedate]="."'".$updatedate."'";
+
+  $sql = $sql."WHERE [id]=".$_REQUEST['id'];
+
+  $stmt = sqlsrv_query( $conn, $sql);
+  if( $stmt === false ) {
+    sqlsrv_close($conn);
+    die( print_r( sqlsrv_errors(), true));
+  } 
+  else{
+    echo '{"error":0,"result":"Succes"}';
+  }
+
+  
+}
+else{ 
+    echo '{"error":204,"result":"Category with id = '.$_REQUEST['id'].' does not exist"}';
+}
+  
+sqlsrv_close($conn);
+
+?>
